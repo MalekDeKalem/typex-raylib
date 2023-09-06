@@ -39,9 +39,11 @@ int main(void)
     int timer = 60; // 60 seconds is the initial timer
 
     while (!WindowShouldClose()) {
+        auto a = MeasureTextEx(GetFontDefault(), "interesting", 120, 10);
         BeginDrawing();
             ClearBackground(SKYBLUE);
-            DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT / 45, RAYWHITE);                        
+            DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT / 45, RAYWHITE);              
+            DrawText("interesting",SCREEN_WIDTH / 2 -  a.x / 2 - 10, SCREEN_HEIGHT / 2 - a.y / 2, 120, RAYWHITE);                 
         EndDrawing();
     }
 
