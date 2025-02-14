@@ -40,18 +40,31 @@ int main(void)
     int timer = 60; 
 
     std::random_device rd;
-    std::mt19937 gen(rd());
+    std::mt19937 gen(rd()); 
     std::uniform_int_distribution<> distr(0, DICT_SIZE-1);
 
     int rand = distr(gen);
+    std::string selected_word = Dict[rand];
 
+    int highlight_index = selected_word.length() / 2;
+    int font_size = 120;
+    int spacing = 10;
+
+    Vector2 text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(), font_size, spacing);
+    int start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
+    int start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
 
     while (!WindowShouldClose()) {
-        auto a = MeasureTextEx(GetFontDefault(), Dict[rand].c_str(), 120, 10);
         BeginDrawing();
             ClearBackground(SKYBLUE);
-            DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT / 45, RAYWHITE);              
-            DrawText(Dict[rand].c_str(),SCREEN_WIDTH / 2 -  a.x / 2 - 10, SCREEN_HEIGHT / 2 - a.y / 2, 120, RAYWHITE);                 
+	    int x_offset = 0;
+	    for (size_t i = 0; i < selected_word.length(); i++) {
+	    	std::string charStr(1, selected_word[i]);
+		int char_width = MeasureText(charStr.c_str(), font_size);
+		Color col = (i == highlight_index) ? GREEN : RAYWHITE;
+		DrawText(charStr.c_str(), start_x + x_offset, start_y, font_size, col);
+		x_offset += char_width + spacing;
+	    }
         EndDrawing();
     }
 
