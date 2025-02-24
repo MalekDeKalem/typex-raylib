@@ -5,7 +5,6 @@
 #include <random>
 #include "raylib.h"
 
-#define DICT_SIZE 10
 
 	// g++ -I/usr/local/include -o main main.cpp -L/usr/local/lib -lraylib
 
@@ -45,7 +44,11 @@ const std::vector<std::string> Dict = {
 	"game", "meat", "honey", "horse", "hour", "minute", "second", "hero", "molucule",
 	"berserk", "bizarre", "adventure", "cucumber", "banana", "pizza", "vehicle", "plane",
 	"aircraft", "air", "photosythesis", "sythesizer", "instrument", "vacuum", "dust",
-	"fire", "earth", "mud", "drug", "frag", "fracture", "fruit", "gasoline", "neighborhood"
+	"fire", "earth", "mud", "drug", "frag", "fracture", "fruit", "gasoline", "neighborhood",
+	"water", "machine", "head", "dragon", "master", "slave", "weapon", "gun", "beast", "ant", 
+	"snow", "gas", "burgeoisie", "penicillin", "paper", "pear", "peach", "tree", "monad", "demon",
+	"daemon", "baby", "casual", "mean", "villain", "fit", "fat", "fierce", "fury", "fear", "femur",
+	"phallic", "dolphin", "monkey", "mason", "smith", "sloth"
 };
 
 int main(void) 
