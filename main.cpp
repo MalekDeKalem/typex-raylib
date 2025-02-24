@@ -34,7 +34,18 @@ typedef enum StateChar {
 } StateChar;
 
 
-const std::string Dict[DICT_SIZE] = {"interesting", "mother", "father", "gallant", "robber", "paleontologist", "dinosaur", "mammoth", "merit", "accomplishment"};
+const std::vector<std::string> Dict = {
+	"interesting", "mother", "father", "gallant", "robber", "paleontologist", 
+	"dinosaur", "mammoth", "merit", "accomplishment", "car", "house", "driver",
+	"maggot", "dog", "god", "chicken", "beef", "limousine", "puzzle", "doodle",
+	"corn", "book", "tiger", "cat", "computer", "system", "failure", "success",
+	"browser", "eye", "egg", "cheese", "potato", "tomato", "bacon", "onion", 
+	"garlic", "eggplant", "juice", "favorite", "phone", "wheel", "circle",
+	"wife", "life", "laugh", "mathmatician", "physician", "aquarium", "auditorium",
+	"game", "meat", "honey", "horse", "hour", "minute", "second", "hero", "molucule",
+	"berserk", "bizarre", "adventure", "cucumber", "banana", "pizza", "vehicle", "plane",
+	"aircraft", "air", "photosythesis", "sythesizer", "instrument", "vacuum", "dust",
+};
 
 int main(void) 
 {
@@ -48,7 +59,7 @@ int main(void)
 
 	std::random_device rd;
 	std::mt19937 gen(rd()); 
-	std::uniform_int_distribution<> distr(0, DICT_SIZE-1);
+	std::uniform_int_distribution<> distr(0, Dict.size()-1);
 
 	int rand = distr(gen);
 	std::string selected_word = Dict[rand];
