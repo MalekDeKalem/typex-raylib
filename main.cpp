@@ -41,14 +41,15 @@ const std::vector<std::string> Dict = {
 	"browser", "eye", "egg", "cheese", "potato", "tomato", "bacon", "onion", 
 	"garlic", "eggplant", "juice", "favorite", "phone", "wheel", "circle",
 	"wife", "life", "laugh", "mathmatician", "physician", "aquarium", "auditorium",
-	"game", "meat", "honey", "horse", "hour", "minute", "second", "hero", "molucule",
+	"game", "meat", "honey", "horse", "hour", "minute", "second", "hero", "molecule",
 	"berserk", "bizarre", "adventure", "cucumber", "banana", "pizza", "vehicle", "plane",
-	"aircraft", "air", "photosythesis", "sythesizer", "instrument", "vacuum", "dust",
+	"aircraft", "air", "photosythesis", "synthesizer", "instrument", "vacuum", "dust",
 	"fire", "earth", "mud", "drug", "frag", "fracture", "fruit", "gasoline", "neighborhood",
 	"water", "machine", "head", "dragon", "master", "slave", "weapon", "gun", "beast", "ant", 
 	"snow", "gas", "burgeoisie", "penicillin", "paper", "pear", "peach", "tree", "monad", "demon",
 	"daemon", "baby", "casual", "mean", "villain", "fit", "fat", "fierce", "fury", "fear", "femur",
-	"phallic", "dolphin", "monkey", "mason", "smith", "sloth"
+	"phallic", "dolphin", "monkey", "mason", "smith", "sloth", "dictator", "president", "author",
+	"animal", "anime", "package", "pen", "pencil", "crayon", "ketchup", "mustard", "fearmonger"
 };
 
 int main(void) 
@@ -81,6 +82,8 @@ int main(void)
 
 	bool is_correct = false;
 
+	int score = 0;
+
 	while (!WindowShouldClose()) {
 
 		// if the correct char is pressed increment the highlight_index and set is_correct to true
@@ -107,7 +110,6 @@ int main(void)
 			for (size_t i = 0; i < selected_word.length(); i++) {
 				std::string charStr(1, selected_word[i]);
 				int char_width = MeasureText(charStr.c_str(), font_size);
-				// Color col = (i == highlight_index) ? GREEN : RAYWHITE;
 
 				switch (state_of_char[i]) {
 					case StateChar::DEFAULT:
@@ -126,6 +128,9 @@ int main(void)
 
 				x_offset += char_width + spacing;
 			}
+			std::string score_str = std::to_string(score);
+			const char* score_text = score_str.c_str();
+			DrawText(score_text, 20, SCREEN_HEIGHT - 20, 20, RAYWHITE);
 		EndDrawing();
 
 
@@ -138,6 +143,7 @@ int main(void)
 			text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(), font_size, spacing);
 			start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
 			start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
+			score++;
 		}
 
 	}
