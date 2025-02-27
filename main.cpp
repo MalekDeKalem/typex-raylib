@@ -132,7 +132,10 @@ int main(void)
 			}
 			std::string score_str = std::to_string(score);
 			const char* score_text = score_str.c_str();
+			std::string lives_str = std::to_string(lives);
+			const char* lives_text = lives_str.c_str();
 			DrawText(score_text, 20, SCREEN_HEIGHT - 20, 20, RAYWHITE);
+			DrawText(lives_text, SCREEN_WIDTH-20, SCREEN_HEIGHT - 20, 20, RAYWHITE);
 		EndDrawing();
 
 
