@@ -83,6 +83,7 @@ int main(void)
 	bool is_correct = false;
 
 	int score = 0;
+	int lives = 3;
 
 	while (!WindowShouldClose()) {
 
@@ -99,6 +100,7 @@ int main(void)
 			} else {
 				std::cout << "Pressed incorrect key" << std::endl;
 				state_of_char[highlight_index] = StateChar::FALSE;
+				lives--;
 			}
 
 			highlight_index++;
@@ -145,6 +147,10 @@ int main(void)
 			start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
 			score++;
 		}
+
+		if (lives <= 0) break;
+
+
 
 	}
 
