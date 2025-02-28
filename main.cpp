@@ -49,7 +49,8 @@ const std::vector<std::string> Dict = {
 	"snow", "gas", "burgeoisie", "penicillin", "paper", "pear", "peach", "tree", "monad", "demon",
 	"daemon", "baby", "casual", "mean", "villain", "fit", "fat", "fierce", "fury", "fear", "femur",
 	"phallic", "dolphin", "monkey", "mason", "smith", "sloth", "dictator", "president", "author",
-	"animal", "anime", "package", "pen", "pencil", "crayon", "ketchup", "mustard", "fearmonger"
+	"animal", "anime", "package", "pen", "pencil", "crayon", "ketchup", "mustard", "fearmonger",
+	"capital", "mansion", "dust", "dusk", "diamond", "fitness", "surf", "mountain", "river", "coast"
 };
 
 int main(void) 
