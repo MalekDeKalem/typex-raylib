@@ -6,7 +6,6 @@
 #include "raylib.h"
 
 
-	// g++ -I/usr/local/include -o main main.cpp -L/usr/local/lib -lraylib
 
 
 
@@ -55,7 +54,8 @@ const std::vector<std::string> Dict = {
 	"daemon", "baby", "casual", "mean", "villain", "fit", "fat", "fierce", "fury", "fear", "femur",
 	"phallic", "dolphin", "monkey", "mason", "smith", "sloth", "dictator", "president", "author",
 	"animal", "anime", "package", "pen", "pencil", "crayon", "ketchup", "mustard", "fearmonger",
-	"capital", "mansion", "dust", "dusk", "diamond", "fitness", "surf", "mountain", "river", "coast"
+	"capital", "mansion", "dust", "dusk", "diamond", "fitness", "surf", "mountain", "river", "coast",
+  "fahrenheit", "kilometer", "mallet", "bigot", "gril", "measles", "girl", "boy", "text", "editor"
 };
 
 int main(void) 
@@ -100,9 +100,6 @@ int main(void)
     switch(currentScreen) {
       case TITLE: 
       {
-        if (IsKeyPressed(KEY_ENTER)) {
-          currentScreen = GameScreen::GAMEPLAY;
-        }
 
         Vector2 text_width = MeasureTextEx(GetFontDefault(), "Typex", 100, 0);
            BeginDrawing();
@@ -110,6 +107,10 @@ int main(void)
             DrawText("Typex", SCREEN_WIDTH / 2 - text_width.x / 2, SCREEN_HEIGHT / 2 - text_width.y / 2, 100, RAYWHITE);
             DrawText("Press ENTER to play", SCREEN_WIDTH / 2 - text_width.x / 2, SCREEN_HEIGHT / 2 - text_width.y / 2 - 20, 20, RAYWHITE);
           EndDrawing();
+
+        if (IsKeyPressed(KEY_ENTER)) {
+          currentScreen = GameScreen::GAMEPLAY;
+        }
       } break;
       case GAMEPLAY:
       {
@@ -174,7 +175,11 @@ int main(void)
             score++;
           }
 
-          if (lives <= 0) currentScreen = GameScreen::TITLE;
+          if (lives <= 0)  {
+            currentScreen = GameScreen::TITLE;
+            lives = 3;
+            score = 0;
+          }
           
 
       } break;
