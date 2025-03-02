@@ -176,6 +176,13 @@ int main(void)
           }
 
           if (lives <= 0)  {
+            highlight_index = 0;
+            int rand_index = distr(gen);
+            selected_word = Dict[rand_index];
+            state_of_char.assign(selected_word.size(), StateChar::DEFAULT);
+            text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(), font_size, spacing);
+            start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
+            start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
             currentScreen = GameScreen::TITLE;
             lives = 3;
             score = 0;
