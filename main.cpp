@@ -103,10 +103,12 @@ int main(void)
         if (IsKeyPressed(KEY_ENTER)) {
           currentScreen = GameScreen::GAMEPLAY;
         }
+
+        Vector2 text_width = MeasureTextEx(GetFontDefault(), "Typex", 100, 0);
            BeginDrawing();
             ClearBackground(SKYBLUE);
-            DrawText("Typex", 20, 20, 20, RAYWHITE);
-            DrawText("Press ENTER to play", 20, 50, 20, RAYWHITE);
+            DrawText("Typex", SCREEN_WIDTH / 2 - text_width.x / 2, SCREEN_HEIGHT / 2 - text_width.y / 2, 100, RAYWHITE);
+            DrawText("Press ENTER to play", SCREEN_WIDTH / 2 - text_width.x / 2, SCREEN_HEIGHT / 2 - text_width.y / 2 - 20, 20, RAYWHITE);
           EndDrawing();
       } break;
       case GAMEPLAY:
