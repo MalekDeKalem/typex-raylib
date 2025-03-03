@@ -4,6 +4,7 @@
 #include <string>
 #include <random>
 #include "raylib.h"
+#include <fstream>
 
 
 #define MAX_ENTRIES 20
@@ -68,10 +69,10 @@ void SaveLeaderBoard(const std::string& fileName, const LeaderBoardData& leaderb
   if (file) {
     size_t size = leaderboard.entries.size();
     file.write(reinterpret_cast<const char*>(&size), sizeof(size));
-    for (const auto& entry : leaderboard) {
+    for (const auto& entry : leaderboard.entries) {
       size_t nameLength = entry.first.size();
       file.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
-      file.write(entry.first.data(); nameLength);
+      file.write(entry.first.data(), nameLength);
       file.write(reinterpret_cast<const char*>(&entry.second), sizeof(entry.second));
     }
     file.close();
@@ -90,7 +91,7 @@ void LoadLeaderboard(const std::string& filename, LeaderBoardData& leaderboard) 
     size_t size;
     file.read(reinterpret_cast<char*>(&size), sizeof(size)); 
 
-    leaderboard.clear();
+    leaderboard.entries.clear();
     for (size_t i = 0; i < size; ++i) {
         size_t nameLength;
         file.read(reinterpret_cast<char*>(&nameLength), sizeof(nameLength)); 
@@ -101,7 +102,7 @@ void LoadLeaderboard(const std::string& filename, LeaderBoardData& leaderboard) 
         int score;
         file.read(reinterpret_cast<char*>(&score), sizeof(score)); 
 
-        leaderboard.emplace_back(name, score);
+        leaderboard.entries.emplace_back(name, score);
     }
 
     file.close();
@@ -110,8 +111,9 @@ void LoadLeaderboard(const std::string& filename, LeaderBoardData& leaderboard) 
 
 int main(void) 
 {
-	const int SCREEN_WIDTH = 800;
-	const int SCREEN_HEIGHT = 450;
+  const float aspectRatio = 16.0f/9.0f;
+	const int SCREEN_WIDTH = 1200;
+	const int SCREEN_HEIGHT = static_cast<int>(SCREEN_WIDTH / aspectRatio);
 
 
 	SetTargetFPS(60);
