@@ -6,7 +6,7 @@
 #include "raylib.h"
 
 
-
+#define MAX_ENTRIES 20
 
 
 	// What it should be int the game?
@@ -24,6 +24,9 @@
 	    words to type will be randomly selected
 	*/
 
+typedef struct {
+  std::vector<std::pair<std::string, int>> entries;
+} LeaderBoardData;
 
 typedef enum StateChar {
 	DEFAULT,
@@ -34,6 +37,7 @@ typedef enum StateChar {
 typedef enum GameScreen {
   TITLE,
   GAMEPLAY,
+  LeaderBoard,
 } GameScreen;
 
 
@@ -58,10 +62,57 @@ const std::vector<std::string> Dict = {
   "fahrenheit", "kilometer", "mallet", "bigot", "gril", "measles", "girl", "boy", "text", "editor"
 };
 
+
+void SaveLeaderBoard(const std::string& fileName, const LeaderBoardData& leaderboard) {
+  std::ofstream file(fileName, std::ios::binary);
+  if (file) {
+    size_t size = leaderboard.entries.size();
+    file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+    for (const auto& entry : leaderboard) {
+      size_t nameLength = entry.first.size();
+      file.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
+      file.write(entry.first.data(); nameLength);
+      file.write(reinterpret_cast<const char*>(&entry.second), sizeof(entry.second));
+    }
+    file.close();
+  } else {
+    std::cerr << "Error: Could not save leaderboard.\n";
+  }
+}
+
+void LoadLeaderboard(const std::string& filename, LeaderBoardData& leaderboard) {
+    std::ifstream file(filename, std::ios::binary);
+    if (!file) {
+        std::cerr << "Error: No leaderboard file found. Initializing empty leaderboard.\n";
+        return;
+    }
+
+    size_t size;
+    file.read(reinterpret_cast<char*>(&size), sizeof(size)); 
+
+    leaderboard.clear();
+    for (size_t i = 0; i < size; ++i) {
+        size_t nameLength;
+        file.read(reinterpret_cast<char*>(&nameLength), sizeof(nameLength)); 
+
+        std::string name(nameLength, '\0');
+        file.read(&name[0], nameLength); 
+
+        int score;
+        file.read(reinterpret_cast<char*>(&score), sizeof(score)); 
+
+        leaderboard.emplace_back(name, score);
+    }
+
+    file.close();
+}
+
+
 int main(void) 
 {
 	const int SCREEN_WIDTH = 800;
 	const int SCREEN_HEIGHT = 450;
+
 
 	SetTargetFPS(60);
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Typex");
@@ -201,7 +252,7 @@ int main(void)
 
 
 
-	// Close the window and clean up resources
+
 	CloseWindow();
 	return 0;
 }
