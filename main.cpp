@@ -1,38 +1,37 @@
-#include <iostream>
-#include <stdio.h>      /* printf */
-#include <math.h>       /* ceil */
-#include <string>
-#include <random>
 #include "raylib.h"
 #include <fstream>
-
+#include <iostream>
+#include <math.h> /* ceil */
+#include <random>
+#include <stdio.h> /* printf */
+#include <string>
 
 #define MAX_ENTRIES 20
 
-
-	// What it should be int the game?
-	/*
-	    a sound effect when a word is correctly typed (positive) 
-	    a sound effect when a typo is made (negative)
-	    a sound effect when the word has not been typed before the timer (negative)
-	    player has three lives when live count is zero than it is game over
-	    lives are lost when word is not typed timely or they are lost when there is a typo 
-	    the timer will get faster progressively the more words you type correctly the faster the timer gets 
-	    each letter of a word is highlighted as you type them when you make a typo it will be shown via an animation 
-	    when you lose a life it also will be shown via an animation
-	    the background will change the further you go
-	    timer will be represented as a bar that decreased as time goes on but will be restarted when a word is correctly typed
-	    words to type will be randomly selected
-	*/
+// What it should be int the game?
+/*
+    a sound effect when a word is correctly typed (positive)
+    a sound effect when a typo is made (negative)
+    a sound effect when the word has not been typed before the timer (negative)
+    player has three lives when live count is zero than it is game over
+    lives are lost when word is not typed timely or they are lost when there is
+   a typo the timer will get faster progressively the more words you type
+   correctly the faster the timer gets each letter of a word is highlighted as
+   you type them when you make a typo it will be shown via an animation when you
+   lose a life it also will be shown via an animation the background will change
+   the further you go timer will be represented as a bar that decreased as time
+   goes on but will be restarted when a word is correctly typed words to type
+   will be randomly selected
+*/
 
 typedef struct {
   std::vector<std::pair<std::string, int>> entries;
 } LeaderBoardData;
 
 typedef enum StateChar {
-	DEFAULT,
-	CORRECT,
-	FALSE,
+  DEFAULT,
+  CORRECT,
+  FALSE,
 } StateChar;
 
 typedef enum GameScreen {
@@ -41,39 +40,97 @@ typedef enum GameScreen {
   LeaderBoard,
 } GameScreen;
 
+const std::vector<std::string> Dict = {"interesting",   "mother",
+                                       "father",        "gallant",
+                                       "robber",        "paleontologist",
+                                       "dinosaur",      "mammoth",
+                                       "merit",         "accomplishment",
+                                       "car",           "house",
+                                       "driver",        "maggot",
+                                       "dog",           "god",
+                                       "chicken",       "beef",
+                                       "limousine",     "puzzle",
+                                       "doodle",        "corn",
+                                       "book",          "tiger",
+                                       "cat",           "computer",
+                                       "system",        "failure",
+                                       "success",       "browser",
+                                       "eye",           "egg",
+                                       "cheese",        "potato",
+                                       "tomato",        "bacon",
+                                       "onion",         "garlic",
+                                       "eggplant",      "juice",
+                                       "favorite",      "phone",
+                                       "wheel",         "circle",
+                                       "wife",          "life",
+                                       "laugh",         "mathmatician",
+                                       "physician",     "aquarium",
+                                       "auditorium",    "game",
+                                       "meat",          "honey",
+                                       "horse",         "hour",
+                                       "minute",        "second",
+                                       "hero",          "molecule",
+                                       "berserk",       "bizarre",
+                                       "adventure",     "cucumber",
+                                       "banana",        "pizza",
+                                       "vehicle",       "plane",
+                                       "aircraft",      "air",
+                                       "photosynthesis", "synthesizer",
+                                       "instrument",    "vacuum",
+                                       "dust",          "fire",
+                                       "earth",         "mud",
+                                       "drug",          "frag",
+                                       "fracture",      "fruit",
+                                       "gasoline",      "neighborhood",
+                                       "water",         "machine",
+                                       "head",          "dragon",
+                                       "master",        "slave",
+                                       "weapon",        "gun",
+                                       "beast",         "ant",
+                                       "snow",          "gas",
+                                       "burgeoisie",    "penicillin",
+                                       "paper",         "pear",
+                                       "peach",         "tree",
+                                       "monad",         "demon",
+                                       "daemon",        "baby",
+                                       "casual",        "mean",
+                                       "villain",       "fit",
+                                       "fat",           "fierce",
+                                       "fury",          "fear",
+                                       "femur",         "phallic",
+                                       "dolphin",       "monkey",
+                                       "mason",         "smith",
+                                       "sloth",         "dictator",
+                                       "president",     "author",
+                                       "animal",        "anime",
+                                       "package",       "pen",
+                                       "pencil",        "crayon",
+                                       "ketchup",       "mustard",
+                                       "fearmonger",    "capital",
+                                       "mansion",       "dust",
+                                       "dusk",          "diamond",
+                                       "fitness",       "surf",
+                                       "mountain",      "river",
+                                       "coast",         "fahrenheit",
+                                       "kilometer",     "mallet",
+                                       "bigot",         "gril",
+                                       "measles",       "girl",
+                                       "boy",           "text",
+                                       "editor", "manuscript"};
 
-const std::vector<std::string> Dict = {
-	"interesting", "mother", "father", "gallant", "robber", "paleontologist", 
-	"dinosaur", "mammoth", "merit", "accomplishment", "car", "house", "driver",
-	"maggot", "dog", "god", "chicken", "beef", "limousine", "puzzle", "doodle",
-	"corn", "book", "tiger", "cat", "computer", "system", "failure", "success",
-	"browser", "eye", "egg", "cheese", "potato", "tomato", "bacon", "onion", 
-	"garlic", "eggplant", "juice", "favorite", "phone", "wheel", "circle",
-	"wife", "life", "laugh", "mathmatician", "physician", "aquarium", "auditorium",
-	"game", "meat", "honey", "horse", "hour", "minute", "second", "hero", "molecule",
-	"berserk", "bizarre", "adventure", "cucumber", "banana", "pizza", "vehicle", "plane",
-	"aircraft", "air", "photosythesis", "synthesizer", "instrument", "vacuum", "dust",
-	"fire", "earth", "mud", "drug", "frag", "fracture", "fruit", "gasoline", "neighborhood",
-	"water", "machine", "head", "dragon", "master", "slave", "weapon", "gun", "beast", "ant", 
-	"snow", "gas", "burgeoisie", "penicillin", "paper", "pear", "peach", "tree", "monad", "demon",
-	"daemon", "baby", "casual", "mean", "villain", "fit", "fat", "fierce", "fury", "fear", "femur",
-	"phallic", "dolphin", "monkey", "mason", "smith", "sloth", "dictator", "president", "author",
-	"animal", "anime", "package", "pen", "pencil", "crayon", "ketchup", "mustard", "fearmonger",
-	"capital", "mansion", "dust", "dusk", "diamond", "fitness", "surf", "mountain", "river", "coast",
-  "fahrenheit", "kilometer", "mallet", "bigot", "gril", "measles", "girl", "boy", "text", "editor"
-};
-
-
-void SaveLeaderBoard(const std::string& fileName, const LeaderBoardData& leaderboard) {
+void SaveLeaderBoard(const std::string &fileName,
+                     const LeaderBoardData &leaderboard) {
   std::ofstream file(fileName, std::ios::binary);
   if (file) {
     size_t size = leaderboard.entries.size();
-    file.write(reinterpret_cast<const char*>(&size), sizeof(size));
-    for (const auto& entry : leaderboard.entries) {
+    file.write(reinterpret_cast<const char *>(&size), sizeof(size));
+    for (const auto &entry : leaderboard.entries) {
       size_t nameLength = entry.first.size();
-      file.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
+      file.write(reinterpret_cast<const char *>(&nameLength),
+                 sizeof(nameLength));
       file.write(entry.first.data(), nameLength);
-      file.write(reinterpret_cast<const char*>(&entry.second), sizeof(entry.second));
+      file.write(reinterpret_cast<const char *>(&entry.second),
+                 sizeof(entry.second));
     }
     file.close();
   } else {
@@ -81,180 +138,177 @@ void SaveLeaderBoard(const std::string& fileName, const LeaderBoardData& leaderb
   }
 }
 
-void LoadLeaderboard(const std::string& filename, LeaderBoardData& leaderboard) {
-    std::ifstream file(filename, std::ios::binary);
-    if (!file) {
-        std::cerr << "Error: No leaderboard file found. Initializing empty leaderboard.\n";
-        return;
-    }
+void LoadLeaderboard(const std::string &filename,
+                     LeaderBoardData &leaderboard) {
+  std::ifstream file(filename, std::ios::binary);
+  if (!file) {
+    std::cerr << "Error: No leaderboard file found. Initializing empty "
+                 "leaderboard.\n";
+    return;
+  }
 
-    size_t size;
-    file.read(reinterpret_cast<char*>(&size), sizeof(size)); 
+  size_t size;
+  file.read(reinterpret_cast<char *>(&size), sizeof(size));
 
-    leaderboard.entries.clear();
-    for (size_t i = 0; i < size; ++i) {
-        size_t nameLength;
-        file.read(reinterpret_cast<char*>(&nameLength), sizeof(nameLength)); 
+  leaderboard.entries.clear();
+  for (size_t i = 0; i < size; ++i) {
+    size_t nameLength;
+    file.read(reinterpret_cast<char *>(&nameLength), sizeof(nameLength));
 
-        std::string name(nameLength, '\0');
-        file.read(&name[0], nameLength); 
+    std::string name(nameLength, '\0');
+    file.read(&name[0], nameLength);
 
-        int score;
-        file.read(reinterpret_cast<char*>(&score), sizeof(score)); 
+    int score;
+    file.read(reinterpret_cast<char *>(&score), sizeof(score));
 
-        leaderboard.entries.emplace_back(name, score);
-    }
+    leaderboard.entries.emplace_back(name, score);
+  }
 
-    file.close();
+  file.close();
 }
 
+int main(void) {
+  const float aspectRatio = 16.0f / 9.0f;
+  const int SCREEN_WIDTH = 1200;
+  const int SCREEN_HEIGHT = static_cast<int>(SCREEN_WIDTH / aspectRatio);
 
-int main(void) 
-{
-  const float aspectRatio = 16.0f/9.0f;
-	const int SCREEN_WIDTH = 1200;
-	const int SCREEN_HEIGHT = static_cast<int>(SCREEN_WIDTH / aspectRatio);
+  SetTargetFPS(60);
+  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Typex");
 
+  int timer = 60;
 
-	SetTargetFPS(60);
-	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Typex");
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distr(0, Dict.size() - 1);
 
-	int timer = 60; 
+  int rand = distr(gen);
+  std::string selected_word = Dict[rand];
 
-	std::random_device rd;
-	std::mt19937 gen(rd()); 
-	std::uniform_int_distribution<> distr(0, Dict.size()-1);
+  int highlight_index = 0;
+  int font_size = 120;
+  int spacing = 10;
 
-	int rand = distr(gen);
-	std::string selected_word = Dict[rand];
+  Vector2 text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(),
+                                    font_size, spacing);
+  int start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
+  int start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
 
-	int highlight_index = 0;
-	int font_size = 120;
-	int spacing = 10;
-
-	Vector2 text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(), font_size, spacing);
-	int start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
-	int start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
-
-	std::vector<StateChar> state_of_char(selected_word.size(), StateChar::DEFAULT);
+  std::vector<StateChar> state_of_char(selected_word.size(),
+                                       StateChar::DEFAULT);
   GameScreen currentScreen = GameScreen::TITLE;
 
+  bool is_correct = false;
 
-	bool is_correct = false;
+  int score = 0;
+  int lives = 3;
 
-	int score = 0;
-	int lives = 3;
+  while (!WindowShouldClose()) {
 
-	while (!WindowShouldClose()) {
+    // if the correct char is pressed increment the highlight_index and set
+    // is_correct to true if the false char is pressed increment the
+    // highlight_index and set is_correct to false;
 
-		// if the correct char is pressed increment the highlight_index and set is_correct to true
-		// if the false char is pressed increment the highlight_index and set is_correct to false;
+    switch (currentScreen) {
+    case TITLE: {
 
-    switch(currentScreen) {
-      case TITLE: 
-      {
+      Vector2 text_width = MeasureTextEx(GetFontDefault(), "Typex", 100, 0);
+      BeginDrawing();
+      ClearBackground(SKYBLUE);
+      DrawText("Typex", SCREEN_WIDTH / 2 - text_width.x / 2,
+               SCREEN_HEIGHT / 2 - text_width.y / 2, 100, RAYWHITE);
+      DrawText("Press ENTER to play", SCREEN_WIDTH / 2 - text_width.x / 2,
+               SCREEN_HEIGHT / 2 - text_width.y / 2 - 20, 20, RAYWHITE);
+      EndDrawing();
 
-        Vector2 text_width = MeasureTextEx(GetFontDefault(), "Typex", 100, 0);
-           BeginDrawing();
-            ClearBackground(SKYBLUE);
-            DrawText("Typex", SCREEN_WIDTH / 2 - text_width.x / 2, SCREEN_HEIGHT / 2 - text_width.y / 2, 100, RAYWHITE);
-            DrawText("Press ENTER to play", SCREEN_WIDTH / 2 - text_width.x / 2, SCREEN_HEIGHT / 2 - text_width.y / 2 - 20, 20, RAYWHITE);
-          EndDrawing();
+      if (IsKeyPressed(KEY_ENTER)) {
+        currentScreen = GameScreen::GAMEPLAY;
+      }
+    } break;
+    case GAMEPLAY: {
+      int key_pressed = GetCharPressed();
 
-        if (IsKeyPressed(KEY_ENTER)) {
-          currentScreen = GameScreen::GAMEPLAY;
+      if (key_pressed != 0) {
+
+        if (key_pressed == selected_word[highlight_index]) {
+          std::cout << "Pressed correct key" << std::endl;
+          state_of_char[highlight_index] = StateChar::CORRECT;
+        } else {
+          std::cout << "Pressed incorrect key" << std::endl;
+          state_of_char[highlight_index] = StateChar::FALSE;
+          lives--;
         }
-      } break;
-      case GAMEPLAY:
-      {
-        int key_pressed = GetCharPressed();	
 
-          if (key_pressed != 0) {
+        highlight_index++;
+      }
 
-            if (key_pressed == selected_word[highlight_index]) {
-              std::cout << "Pressed correct key" << std::endl;
-              state_of_char[highlight_index] = StateChar::CORRECT;
-            } else {
-              std::cout << "Pressed incorrect key" << std::endl;
-              state_of_char[highlight_index] = StateChar::FALSE;
-              lives--;
-            }
+      BeginDrawing();
+      ClearBackground(SKYBLUE);
+      int x_offset = 0;
+      for (size_t i = 0; i < selected_word.length(); i++) {
+        std::string charStr(1, selected_word[i]);
+        int char_width = MeasureText(charStr.c_str(), font_size);
 
-            highlight_index++;
-          }
+        switch (state_of_char[i]) {
+        case StateChar::DEFAULT:
+          DrawText(charStr.c_str(), start_x + x_offset, start_y, font_size,
+                   RAYWHITE);
+          break;
+        case StateChar::CORRECT:
+          DrawText(charStr.c_str(), start_x + x_offset, start_y, font_size,
+                   GREEN);
+          break;
+        case StateChar::FALSE:
+          DrawText(charStr.c_str(), start_x + x_offset, start_y, font_size,
+                   RED);
+          break;
+        default:
+          std::cout << "Unknown state" << std::endl;
+          break;
+        }
 
-          BeginDrawing();
-            ClearBackground(SKYBLUE);
-            int x_offset = 0;
-            for (size_t i = 0; i < selected_word.length(); i++) {
-              std::string charStr(1, selected_word[i]);
-              int char_width = MeasureText(charStr.c_str(), font_size);
+        x_offset += char_width + spacing;
+      }
+      std::string score_str = std::to_string(score);
+      const char *score_text = score_str.c_str();
+      std::string lives_str = std::to_string(lives);
+      const char *lives_text = lives_str.c_str();
+      DrawText(score_text, 20, SCREEN_HEIGHT - 20, 20, RAYWHITE);
+      DrawText(lives_text, SCREEN_WIDTH - 20, SCREEN_HEIGHT - 20, 20, RAYWHITE);
+      EndDrawing();
 
-              switch (state_of_char[i]) {
-                case StateChar::DEFAULT:
-                  DrawText(charStr.c_str(), start_x + x_offset, start_y, font_size, RAYWHITE);
-                  break;
-                case StateChar::CORRECT:
-                  DrawText(charStr.c_str(), start_x + x_offset, start_y, font_size, GREEN);
-                  break;
-                case StateChar::FALSE:
-                  DrawText(charStr.c_str(), start_x + x_offset, start_y, font_size, RED);
-                  break;
-                default:
-                  std::cout << "Unknown state" << std::endl;
-                  break;
-              }
+      if (highlight_index >= selected_word.size()) {
+        highlight_index = 0;
+        int rand_index = distr(gen);
+        selected_word = Dict[rand_index];
+        state_of_char.assign(selected_word.size(), StateChar::DEFAULT);
+        text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(),
+                                  font_size, spacing);
+        start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
+        start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
+        score++;
+      }
 
-              x_offset += char_width + spacing;
-            }
-            std::string score_str = std::to_string(score);
-            const char* score_text = score_str.c_str();
-            std::string lives_str = std::to_string(lives);
-            const char* lives_text = lives_str.c_str();
-            DrawText(score_text, 20, SCREEN_HEIGHT - 20, 20, RAYWHITE);
-            DrawText(lives_text, SCREEN_WIDTH-20, SCREEN_HEIGHT - 20, 20, RAYWHITE);
-          EndDrawing();
+      if (lives <= 0) {
+        highlight_index = 0;
+        int rand_index = distr(gen);
+        selected_word = Dict[rand_index];
+        state_of_char.assign(selected_word.size(), StateChar::DEFAULT);
+        text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(),
+                                  font_size, spacing);
+        start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
+        start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
+        currentScreen = GameScreen::TITLE;
+        lives = 3;
+        score = 0;
+      }
 
+    } break;
 
-
-          if (highlight_index >= selected_word.size()) {
-            highlight_index = 0;
-            int rand_index = distr(gen);
-            selected_word = Dict[rand_index];
-            state_of_char.assign(selected_word.size(), StateChar::DEFAULT);
-            text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(), font_size, spacing);
-            start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
-            start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
-            score++;
-          }
-
-          if (lives <= 0)  {
-            highlight_index = 0;
-            int rand_index = distr(gen);
-            selected_word = Dict[rand_index];
-            state_of_char.assign(selected_word.size(), StateChar::DEFAULT);
-            text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(), font_size, spacing);
-            start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
-            start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
-            currentScreen = GameScreen::TITLE;
-            lives = 3;
-            score = 0;
-          }
-          
-
-      } break;
-
-      default: break;
-
+    default:
+      break;
     }
-		
-	
+  }
 
-	}
-
-
-
-
-	CloseWindow();
-	return 0;
+  CloseWindow();
+  return 0;
 }
