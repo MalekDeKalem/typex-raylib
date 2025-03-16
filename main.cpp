@@ -279,6 +279,9 @@ int main(void) {
   std::vector<StateChar> state_of_char(selected_word.size(),
                                        StateChar::DEFAULT);
   GameScreen currentScreen = GameScreen::TITLE;
+  LeaderBoardData ld;
+
+  LoadLeaderboard("score", ld);
 
   bool is_correct = false;
 
@@ -372,6 +375,7 @@ int main(void) {
       }
 
       if (lives <= 0) {
+        ld.entries.push_back(std::pair<std::string, int>("ACK", score));
         highlight_index = 0;
         int rand_index = distr(gen);
         selected_word = Dict[rand_index];
@@ -380,10 +384,25 @@ int main(void) {
                                   font_size, spacing);
         start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
         start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
-        currentScreen = GameScreen::TITLE;
+        currentScreen = GameScreen::LeaderBoard;
         lives = 3;
         score = 0;
+        SaveLeaderBoard("score", ld);
       }
+
+    } break;
+      case LeaderBoard: {
+
+        int padding = 20;
+        BeginDrawing();
+        ClearBackground(SKYBLUE);
+        for (auto entry : ld.entries) {
+          std::string score_str = std::to_string(entry.second);
+          DrawText(entry.first.c_str(), 20, padding, 20, RAYWHITE);
+          DrawText(score_str.c_str(), 40, padding, 20, RAYWHITE);
+          padding += 20;
+        }
+        EndDrawing();
 
     } break;
 
