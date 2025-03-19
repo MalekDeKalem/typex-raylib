@@ -1,2 +1,0 @@
-#!/bin/bash
-g++ -I/usr/local/include -o main main.cpp -L/usr/local/lib -lraylib
