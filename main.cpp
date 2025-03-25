@@ -5,6 +5,7 @@
 #include <random>
 #include <stdio.h> /* printf */
 #include <string>
+#include <algorithm>
 
 #define MAX_ENTRIES 20
 
@@ -393,16 +394,36 @@ int main(void) {
     } break;
       case LeaderBoard: {
 
-        int padding = 20;
+        int padding = 50;
         BeginDrawing();
         ClearBackground(SKYBLUE);
+
+        std::sort(ld.entries.begin(), ld.entries.end(), [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b){
+          return a.second > b.second;
+        });
+
+
         for (auto entry : ld.entries) {
+          Vector2 name_size = MeasureTextEx(GetFontDefault(), entry.first.c_str(), 50, 50);
+
           std::string score_str = std::to_string(entry.second);
-          DrawText(entry.first.c_str(), 20, padding, 20, RAYWHITE);
-          DrawText(score_str.c_str(), 40, padding, 20, RAYWHITE);
-          padding += 20;
+          DrawText(entry.first.c_str(), SCREEN_WIDTH / 2 - name_size.x / 2, padding, 50, RAYWHITE);
+          DrawText(score_str.c_str(), SCREEN_WIDTH / 2 - name_size.x / 2 + name_size.x, padding, 50, RAYWHITE);
+          padding += 50;
         }
+
+
+        std::string enter_text = "Press Enter to play again";
+        Vector2 enter_size = MeasureTextEx(GetFontDefault(), enter_text.c_str(), 50, 25);
+        DrawText(enter_text.c_str(), SCREEN_WIDTH / 2 - enter_size.x, 250, 25, RAYWHITE);
+
+
         EndDrawing();
+
+      if (IsKeyPressed(KEY_ENTER)) {
+        currentScreen = GameScreen::GAMEPLAY;
+      }
+ 
 
     } break;
 
