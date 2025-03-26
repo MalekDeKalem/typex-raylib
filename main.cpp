@@ -363,18 +363,6 @@ int main(void) {
       DrawText(lives_text, SCREEN_WIDTH - 20, SCREEN_HEIGHT - 20, 20, RAYWHITE);
       EndDrawing();
 
-      if (highlight_index >= selected_word.size()) {
-        highlight_index = 0;
-        int rand_index = distr(gen);
-        selected_word = Dict[rand_index];
-        state_of_char.assign(selected_word.size(), StateChar::DEFAULT);
-        text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(),
-                                  font_size, spacing);
-        start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
-        start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
-        score++;
-      }
-
       if (lives <= 0) {
         ld.entries.push_back(std::pair<std::string, int>("ACK", score));
         highlight_index = 0;
@@ -391,6 +379,19 @@ int main(void) {
         SaveLeaderBoard("score", ld);
       }
 
+      if (highlight_index >= selected_word.size()) {
+        highlight_index = 0;
+        int rand_index = distr(gen);
+        selected_word = Dict[rand_index];
+        state_of_char.assign(selected_word.size(), StateChar::DEFAULT);
+        text_size = MeasureTextEx(GetFontDefault(), selected_word.c_str(),
+                                  font_size, spacing);
+        start_x = SCREEN_WIDTH / 2 - text_size.x / 2;
+        start_y = SCREEN_HEIGHT / 2 - text_size.y / 2;
+        score++;
+      }
+
+
     } break;
       case LeaderBoard: {
 
@@ -402,14 +403,16 @@ int main(void) {
           return a.second > b.second;
         });
 
-
+        int i = 0;
         for (auto entry : ld.entries) {
+          if (i >= 10) break;
           Vector2 name_size = MeasureTextEx(GetFontDefault(), entry.first.c_str(), 50, 50);
 
           std::string score_str = std::to_string(entry.second);
           DrawText(entry.first.c_str(), SCREEN_WIDTH / 2 - name_size.x / 2, padding, 50, RAYWHITE);
           DrawText(score_str.c_str(), SCREEN_WIDTH / 2 - name_size.x / 2 + name_size.x, padding, 50, RAYWHITE);
           padding += 50;
+          i++;
         }
 
 
