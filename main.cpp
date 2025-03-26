@@ -286,6 +286,7 @@ int main(void) {
 
   bool is_correct = false;
 
+
   int score = 0;
   int lives = 3;
 
@@ -317,10 +318,8 @@ int main(void) {
       if (key_pressed != 0) {
 
         if (key_pressed == selected_word[highlight_index]) {
-          std::cout << "Pressed correct key" << std::endl;
           state_of_char[highlight_index] = StateChar::CORRECT;
         } else {
-          std::cout << "Pressed incorrect key" << std::endl;
           state_of_char[highlight_index] = StateChar::FALSE;
           lives--;
         }
@@ -417,8 +416,10 @@ int main(void) {
 
 
         std::string enter_text = "Press Enter to play again";
-        Vector2 enter_size = MeasureTextEx(GetFontDefault(), enter_text.c_str(), 50, 25);
-        DrawText(enter_text.c_str(), SCREEN_WIDTH / 2 - enter_size.x, 250, 25, RAYWHITE);
+        int enter_size = MeasureText(enter_text.c_str(), 50);
+        std::cout << enter_size << std::endl;
+        std::cout << SCREEN_WIDTH << std::endl;
+        DrawText(enter_text.c_str(), (SCREEN_WIDTH / 2) - (enter_size / 2), 250, 50, RAYWHITE);
 
 
         EndDrawing();
