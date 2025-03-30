@@ -290,6 +290,11 @@ int main(void) {
   int score = 0;
   int lives = 3;
 
+  InitAudioDevice();
+
+  // load sounds
+  Sound click = LoadSound("resources/click.wav");
+
   while (!WindowShouldClose()) {
 
     // if the correct char is pressed increment the highlight_index and set
@@ -323,7 +328,7 @@ int main(void) {
           state_of_char[highlight_index] = StateChar::FALSE;
           lives--;
         }
-
+        PlaySound(click);
         highlight_index++;
       }
 
@@ -435,6 +440,9 @@ int main(void) {
       break;
     }
   }
+  
+  UnloadSound(click);
+  CloseAudioDevice();
 
   CloseWindow();
   return 0;
