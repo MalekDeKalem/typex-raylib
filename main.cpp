@@ -41,6 +41,12 @@ typedef enum GameScreen {
   LeaderBoard,
 } GameScreen;
 
+typedef struct {
+  int score;
+  int lives;
+  int hightlight_index; 
+} GameState;
+
 const std::vector<std::string> Dict = {"interesting",
                                        "mother",
                                        "father",
@@ -202,7 +208,7 @@ const std::vector<std::string> Dict = {"interesting",
                                        "chest",
                                        "cockroach"};
 
-void SaveLeaderBoard(const std::string &fileName,
+void saveLeaderBoard(const std::string &fileName,
                      const LeaderBoardData &leaderboard) {
   std::ofstream file(fileName, std::ios::binary);
   if (file) {
@@ -222,7 +228,7 @@ void SaveLeaderBoard(const std::string &fileName,
   }
 }
 
-void LoadLeaderboard(const std::string &filename,
+void loadLeaderboard(const std::string &filename,
                      LeaderBoardData &leaderboard) {
   std::ifstream file(filename, std::ios::binary);
   if (!file) {
@@ -282,7 +288,7 @@ int main(void) {
   GameScreen currentScreen = GameScreen::TITLE;
   LeaderBoardData ld;
 
-  LoadLeaderboard("score", ld);
+  loadLeaderboard("score", ld);
 
   bool is_correct = false;
 
@@ -380,7 +386,7 @@ int main(void) {
         currentScreen = GameScreen::LeaderBoard;
         lives = 3;
         score = 0;
-        SaveLeaderBoard("score", ld);
+        saveLeaderBoard("score", ld);
       }
 
       if (highlight_index >= selected_word.size()) {
