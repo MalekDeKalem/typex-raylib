@@ -290,9 +290,6 @@ int main(void) {
 
   loadLeaderboard("score", ld);
 
-  bool is_correct = false;
-
-
   int score = 0;
   int lives = 3;
 
