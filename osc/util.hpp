@@ -2,6 +2,8 @@
 #define OSC_UTIL_HPP_INCLUDED
 
 #include "message.hpp"
+#include <cstring>
+#include <variant>
 #include <vector>
 #include <string>
 #include <arpa/inet.h>
@@ -40,7 +42,21 @@ namespace OSC
 
   inline void serializeMsg(std::vector<uint8_t>& buffer, const std::vector<ArgType>& args)
   {
-    
+    for (const ArgType& arg : args) 
+    {
+        if (std::holds_alternative<int>(arg)) 
+        {
+          writeInt32(buffer, std::get<int>(arg));
+        }
+        else if (std::holds_alternative<float>(arg))
+        {
+          writeFloat(buffer, std::get<float>(arg));
+        }
+        else if (std::holds_alternative<std::string>(arg))
+        {
+          writePaddedString(buffer, std::get<std::string>(arg));
+        }
+    }
   }
 
   inline void deserializeMsg(std::vector<uint8_t>& buffer)
