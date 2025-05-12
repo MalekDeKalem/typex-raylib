@@ -288,6 +288,9 @@ int main(void) {
   GameScreen currentScreen = GameScreen::TITLE;
   LeaderBoardData ld;
 
+  Image heartImage = LoadImage("resources/heart.png");
+  Texture2D heartTexture = LoadTextureFromImage(heartImage);
+
   loadLeaderboard("score", ld);
 
   int score = 0;
@@ -368,6 +371,16 @@ int main(void) {
       const char *lives_text = lives_str.c_str();
       DrawText(score_text, 20, SCREEN_HEIGHT - 20, 20, RAYWHITE);
       DrawText(lives_text, SCREEN_WIDTH - 20, SCREEN_HEIGHT - 20, 20, RAYWHITE);
+
+      int heartTextureSize = 32;
+      int heartTexturePadding = 10;
+
+
+      for (int i = 0; i < lives; i++) {
+          int heartTexturePosX = heartTextureSize * (i+1) + heartTexturePadding;
+          DrawTexture(heartTexture, heartTexturePosX, 0, WHITE);
+      }
+
       EndDrawing();
 
       if (lives <= 0) {
