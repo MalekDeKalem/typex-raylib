@@ -374,11 +374,11 @@ int main(void) {
 
       int heartTextureSize = 32;
       int heartTexturePadding = 10;
-
+      int heartTexturePosX = 10;
 
       for (int i = 0; i < lives; i++) {
-          int heartTexturePosX = heartTextureSize * (i+1) + heartTexturePadding;
           DrawTexture(heartTexture, heartTexturePosX, 0, WHITE);
+          heartTexturePosX = heartTextureSize * (i+1) + heartTexturePadding;
       }
 
       EndDrawing();
